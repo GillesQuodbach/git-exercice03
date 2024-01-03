@@ -4,6 +4,9 @@ import java.util.*;
 
 public class GitExo03 {
 
+	// TODO récupérer toutes les valeurs de distances du tableau, la premère arrivée
+	// à 2400 => STOP
+
 	// Jet du dé
 	public static int dieRoll() {
 		int min = 1;
@@ -85,17 +88,17 @@ public class GitExo03 {
 				speedIncDec = 3;
 			}
 		}
-System.out.println("speedIncDec: " + speedIncDec);
+		System.out.println("speedIncDec: " + speedIncDec);
 		return speedIncDec;
 	}
 
-	
-	
 	public static void main(String[] args) {
+
 		Scanner scan = new Scanner(System.in);
+		boolean replay = true;
 		// Liste des chevaux
 		HashMap<Integer, Integer[]> horsesListHashMap = new HashMap<>();
-		speedModif(6,6);
+
 		// Variables
 		int raceDistance = 2400;
 		int gameChoice = 0;
@@ -120,38 +123,54 @@ System.out.println("speedIncDec: " + speedIncDec);
 		for (int i = 0; i < horsesOnStart; i++) {
 			horsesListHashMap.put(i, new Integer[] { 0, 0, 0 });
 		}
+		while (replay) {
+			// Jet du dé et mise à jour des infos des chevaux
+			for (int i = 0; i < horsesOnStart; i++) {
+				int randomDieRoll = dieRoll();
 
-		// Jet du dé et mise à jour des infos des chevaux
-		for (int i = 0; i < horsesOnStart; i++) {
-			int randomDieRoll = dieRoll();
+				// On récupère le cheval concerné
+				Integer[] values = horsesListHashMap.get(i);
 
-			// On récupère le cheval concerné
-			Integer[] values = horsesListHashMap.get(i);
+				values[horseSpeedValueIndex] += speedModif(randomDieRoll, values[horseSpeedValueIndex]);
+				values[horseDistanceValueIndex] += speedCalc(values[horseSpeedValueIndex]);
+				values[horseTimeValueIndex] += 10;
+				horsesListHashMap.put(i, values);
+				System.out.println(Arrays.toString(values));
+			}
 
-			values[horseSpeedValueIndex] += speedModif(randomDieRoll,values[horseSpeedValueIndex]);
-			values[horseDistanceValueIndex] += speedCalc(values[horseSpeedValueIndex]);
-			horsesListHashMap.put(i, values);
-			System.out.println(Arrays.toString(values));
+			// Affichage des infos de tous les chevaux
+
+			for (int i = 0; i < horsesListHashMap.size(); i++) {
+
+				Integer[] values = horsesListHashMap.get(i);
+
+				int speedValue = values[horseSpeedValueIndex];
+				int distanceValue = values[horseDistanceValueIndex];
+				int timeValue = values[horseTimeValueIndex];
+
+				System.out.println("Infos cheval n°= " + (i + 1) + " : " + "vitesse: " + speedValue + "; "
+						+ "distance: " + distanceValue + "; " + "temps:" + timeValue);
+			}
+
+			System.out.println("calcul de la vitesse:" + speedCalc(2));
+			
+			int raceEndLimit = 2400;
+			
+			for (Map.Entry<Integer, Integer[]> entry : horsesListHashMap.entrySet()) {
+				Integer[] values = entry.getValue();
+				
+				for (int i = 0; i < values.length; i++) {
+					if (values[i] >= raceEndLimit) {
+						int winner = entry.getKey() + 1;
+						replay = false;
+						System.out.println("And the winner is : " + winner);
+						break;
+					}
+				}
+			}
+
 		}
-
-		// Affichage des infos de tous les chevaux
-
-		for (int i = 0; i < horsesListHashMap.size(); i++) {
-
-			Integer[] values = horsesListHashMap.get(i);
-
-			int speedValue = values[horseSpeedValueIndex];
-			int distanceValue = values[horseDistanceValueIndex];
-			int timeValue = values[horseTimeValueIndex];
-
-			System.out.println("Infos cheval n°= " + (i + 1) + " : " + "vitesse: " + speedValue + "; " + "distance: "
-					+ distanceValue + "; " + "temps:" + timeValue);
-		}
-
-		System.out.println("calcul de la vitesse:" + speedCalc(2));
-
 	}
-
 //	public static void main(String[] args) {
 //	// Variables
 //	int raceDistance = 2400;
