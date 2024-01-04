@@ -214,20 +214,19 @@ public class GitExo03 {
 			System.out.println("Relancer le dé ? Y/N");
 			while (!wantToReplay) {
 				String input = scan.nextLine().toLowerCase();
-				
-					String playerDieRollInput = input.toLowerCase();
-					if (playerDieRollInput.equals("y")) {
-						wantToReplay = true;
-						break;
-					} else if (playerDieRollInput.equals("n")) {
-						System.out.println("A bientôt !");
-						replay = false;
-						return;
 
-					} else {
-						System.out.println("Veuillez saisir y ou n !");
-					}
-				 
+				String playerDieRollInput = input.toLowerCase();
+				if (playerDieRollInput.equals("y")) {
+					wantToReplay = true;
+					break;
+				} else if (playerDieRollInput.equals("n")) {
+					System.out.println("A bientôt !");
+					replay = false;
+					return;
+
+				} else {
+					System.out.println("Veuillez saisir y ou n !!!");
+				}
 
 			}
 		}
