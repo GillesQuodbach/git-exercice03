@@ -83,25 +83,25 @@ public class GitExo03 {
 		// Vitesse = 5
 		if ((actualSpeed == 5) && (dieRoll == 1)) {
 			return speedIncDec = -2;
-		} else if (actualSpeed == 5 && (dieRoll == 2 )) {
+		} else if (actualSpeed == 5 && (dieRoll == 2)) {
 			return speedIncDec = -1;
 		} else if (actualSpeed == 5 && (dieRoll == 3 || dieRoll == 4 || dieRoll == 5)) {
 			return speedIncDec = 0;
-		} else if (actualSpeed == 5 && (dieRoll == 6 )) {
+		} else if (actualSpeed == 5 && (dieRoll == 6)) {
 			return speedIncDec = 1;
 		}
 		// Vitesse = 6
-				if ((actualSpeed == 6) && (dieRoll == 1)) {
-					return speedIncDec = -2;
-				} else if (actualSpeed == 6 && (dieRoll == 2 )) {
-					return speedIncDec = -1;
-				} else if (actualSpeed == 6 && (dieRoll == 3 || dieRoll == 4 || dieRoll == 5)) {
-					return speedIncDec = 0;
-				} else if (actualSpeed == 6 && (dieRoll == 6 )) {
-					return speedIncDec = -10;
-				}
+		if ((actualSpeed == 6) && (dieRoll == 1)) {
+			return speedIncDec = -2;
+		} else if (actualSpeed == 6 && (dieRoll == 2)) {
+			return speedIncDec = -1;
+		} else if (actualSpeed == 6 && (dieRoll == 3 || dieRoll == 4 || dieRoll == 5)) {
+			return speedIncDec = 0;
+		} else if (actualSpeed == 6 && (dieRoll == 6)) {
+			return speedIncDec = -10;
+		}
 		return speedIncDec;
-	
+
 	}
 
 	public static void main(String[] args) {
@@ -139,43 +139,48 @@ public class GitExo03 {
 		for (int i = 0; i < horsesOnStart; i++) {
 			horsesListHashMap.put(i, new Integer[] { 0, 0 });
 		}
+		
+		
 		while (replay) {
-			// Jet du dé et mise à jour des infos des chevaux
+			int counter = 1;
+			;
 			for (int i = 0; i < horsesOnStart; i++) {
 				// On récupère le cheval concerné
+				System.out.println("Nombre de boucles = " + counter++);
 				Integer[] values = horsesListHashMap.get(i);
-
+				System.out.println("***values***" + Arrays.toString(values));
+				
 				// jet du dé (OK)
 				int randomDieRoll = dieRoll();
 				System.out.println("Valeur du lancé du dé: " + randomDieRoll);
 
 				// Calcul du delta à appliquer
-				
-				System.out.println("Valeur du delta vitesse:" + updateSpeedCalc(randomDieRoll,values[1]));
+				int lapDelta = updateSpeedCalc(randomDieRoll, values[0]);
+				System.out.println("Valeur du delta vitesse:" + lapDelta);
 
-		
-
-
-				// Update de la distance actuelle
-//				int updatedDistance = values[1] + distanceDelta;
-//				System.out.println("horse values = " + Arrays.toString(values));
-//				// Mise a jour des valeurs
-//				values[0] += updatedDelta;
-//				values[1] += updatedDistance;
-//				// Mise a jour du tableau
-//				horsesListHashMap.put(i, values);
-//				System.out.println("horse values = " + Arrays.toString(values));
-				System.out.println("Relancer le dé ? Y/N");
-				String playerDieRoll = scan.nextLine().toLowerCase();
-
-				if (playerDieRoll.equals("y")) {
-					replay = true;
-				} else {
-					replay = false;
+				values[0] += lapDelta;
+				if (values[0] <= 0) {
+					values[0] = 0;
+				} else if (values[0] >= 6) {
+					values[0] = 6;
 				}
+				
+				// Calcul de la distance avec vitesse actuelle
+				values[1] += distanceCalc(values[0]);
+				
+				horsesListHashMap.put(i,values);
+			
 			}
+			System.out.println("Relancer le dé ? Y/N");
+			String playerDieRoll = scan.nextLine().toLowerCase();
 
+			if (playerDieRoll.equals("y")) {
+				replay = true;
+			} else {
+				replay = false;
+			}
 		}
+
 	}
 
 }
