@@ -5,9 +5,6 @@ import org.omg.CORBA.portable.ValueBase;
 
 public class GitExo03 {
 
-	// TODO récupérer toutes les valeurs de distances du tableau, la premère arrivée
-	// à 2400 => STOP
-
 	// Jet du dé
 	public static int dieRoll() {
 		int min = 1;
@@ -109,6 +106,11 @@ public class GitExo03 {
 		Scanner scan = new Scanner(System.in);
 
 		boolean replay = true;
+		boolean wantToReplay = false;
+		int horsesOnStart = 0;
+		int userGameResponse = 0;
+		boolean validHorseNumberInput = false;
+		boolean validGameNumberInput = false;
 		// Liste des chevaux au départ
 		HashMap<Integer, Integer[]> horsesListHashMap = new HashMap<>();
 
@@ -118,13 +120,24 @@ public class GitExo03 {
 		// Mise en place des règles du jeu
 		// Choix du nombre de chevaux au départ
 		System.out.println("Entrer le nombre de chevaux au départ: (12 - 20)");
-		int horsesOnStart = Integer.parseInt(scan.nextLine());
-		while (horsesOnStart < 12 || horsesOnStart > 20) {
+		while (!validHorseNumberInput) {
+			String input = scan.nextLine();
 
-			System.out.println("Veuillez entrer un nombre entre 12 et 20");
-			horsesOnStart = Integer.parseInt(scan.nextLine());
+			try {
+
+				horsesOnStart = Integer.parseInt(input);
+				if (horsesOnStart >= 12 && horsesOnStart <= 20) {
+					validHorseNumberInput = true;
+				} else {
+					System.out.println("Veuillez entrer un nombre entre 12 et 20");
+
+				}
+			} catch (NumberFormatException e) {
+//			horsesOnStart = Integer.parseInt(scan.nextLine());
+				System.out.println("Merci d'entrer un nombre valide !");
+			}
+
 		}
-
 		// Remplissage de la liste des chevaux avec le nombre entré par l'utilisateur
 		// Initialisation des valeurs à 0
 		for (int i = 0; i < horsesOnStart; i++) {
@@ -132,13 +145,24 @@ public class GitExo03 {
 		}
 
 		System.out.println("Voulez-vous jouer au tiercé (1), au quarté (2) ou au quinté (3) ?");
-		int userGameResponse = Integer.parseInt(scan.nextLine());
-		while (userGameResponse < 1 || userGameResponse > 3) {
 
-			System.out.println("Veuillez entrer 1 ou 2 ou 3 !");
-			userGameResponse = Integer.parseInt(scan.nextLine());
+		while (!validGameNumberInput) {
+			String input = scan.nextLine();
+			try {
+
+				userGameResponse = Integer.parseInt(input);
+				if (userGameResponse == 1 || userGameResponse == 2 || userGameResponse == 3) {
+
+					validGameNumberInput = true;
+				} else {
+					System.out.println("Veuillez entrer 1 ou 2 ou 3 !");
+
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Veuillez entrer un chiffre valide !");
+			}
+
 		}
-
 		int winnerSetListSize = 0;
 
 		switch (userGameResponse) {
@@ -152,7 +176,7 @@ public class GitExo03 {
 			winnerSetListSize = 5;
 		}
 
-		while (replay && (winnerSetListSize > winnerSetList.size() )) {
+		while (replay && (winnerSetListSize > winnerSetList.size())) {
 			int counter = 1;
 			;
 			for (int i = 0; i < horsesOnStart; i++) {
@@ -186,14 +210,25 @@ public class GitExo03 {
 				}
 
 			}
-			
+//			while (true) {
 			System.out.println("Relancer le dé ? Y/N");
-			String playerDieRoll = scan.nextLine().toLowerCase();
+			while (!wantToReplay) {
+				String input = scan.nextLine().toLowerCase();
+				
+					String playerDieRollInput = input.toLowerCase();
+					if (playerDieRollInput.equals("y")) {
+						wantToReplay = true;
+						break;
+					} else if (playerDieRollInput.equals("n")) {
+						System.out.println("A bientôt !");
+						replay = false;
+						return;
 
-			if (playerDieRoll.equals("y")) {
-				replay = true;
-			} else {
-				replay = false;
+					} else {
+						System.out.println("Veuillez saisir y ou n !");
+					}
+				 
+
 			}
 		}
 		System.out.println("La courses est terminée !");
