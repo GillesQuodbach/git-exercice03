@@ -1,6 +1,7 @@
 package gitExercice03;
 
 import java.util.*;
+import org.omg.CORBA.portable.ValueBase;
 
 public class GitExo03 {
 
@@ -15,10 +16,10 @@ public class GitExo03 {
 		return randomNumber;
 	}
 
-	// Calcul de la distance au tour en fonction de la vitesse
-	public static int speedCalc(int speed) {
+	// Calcul de la distance à parcourir pendant le tour en fonction de la vitesse
+	public static int distanceCalc(int lapSpeed) {
 		int distance = 0;
-		switch (speed) {
+		switch (lapSpeed) {
 		case 0:
 			distance = 0;
 			break;
@@ -45,56 +46,68 @@ public class GitExo03 {
 	}
 
 	// Modification de la vitesse en fonction du jet de dé
-	public static int speedModif(int dieRoll, int actualSpeed) {
+	public static int updateSpeedCalc(int dieRoll, int actualSpeed) {
 		int speedIncDec = 0;
-
-		if (dieRoll == 1) {
-			if (actualSpeed == 3 || actualSpeed == 4) {
-				speedIncDec = -1;
-			}
-			if (actualSpeed == 5 || actualSpeed == 6) {
-				speedIncDec = -2;
-			}
-		} else if (dieRoll == 2) {
-			if (actualSpeed == 0) {
-				speedIncDec = 1;
-			}
-			if (actualSpeed == 5 || actualSpeed == 6) {
-				speedIncDec = -1;
-			}
-		} else if (dieRoll == 3) {
-			if (actualSpeed >= 0 || actualSpeed <= 3) {
-				speedIncDec = 1;
-			}
-		} else if (dieRoll == 4) {
-			if (actualSpeed >= 0 || actualSpeed <= 3) {
-				speedIncDec = 1;
-			}
-		} else if (dieRoll == 5) {
-			if (actualSpeed == 0) {
-				speedIncDec = 2;
-			}
-			if (actualSpeed >= 1 || actualSpeed <= 4) {
-				speedIncDec = 1;
-			}
-		} else if (dieRoll == 6) {
-			if (actualSpeed >= 0 || actualSpeed <= 2) {
-				speedIncDec = 2;
-			}
-			if (actualSpeed >= 3 || actualSpeed <= 5) {
-				speedIncDec = 1;
-			}
-			if (actualSpeed == 6) {
-				speedIncDec = 3;
-			}
+		// Vitesse = 0
+		if ((actualSpeed == 0) && (dieRoll == 2 || dieRoll == 3 || dieRoll == 4)) {
+			return speedIncDec = 1;
+		} else if (actualSpeed == 0 && (dieRoll == 5 || dieRoll == 6)) {
+			return speedIncDec = 2;
+		} else if (actualSpeed == 0 && (dieRoll == 1)) {
+			return speedIncDec = 0;
 		}
-		System.out.println("speedIncDec: " + speedIncDec);
+		// Vitesse = 1 ET Vitesse = 2
+		if ((actualSpeed == 1 || actualSpeed == 2) && (dieRoll == 1 || dieRoll == 2)) {
+			return speedIncDec = 0;
+		} else if ((actualSpeed == 1 || actualSpeed == 2) && (dieRoll == 3 || dieRoll == 4 || dieRoll == 5)) {
+			return speedIncDec = 1;
+		} else if ((actualSpeed == 1 || actualSpeed == 2) && (dieRoll == 6)) {
+			return speedIncDec = 2;
+		}
+		// Vitesse = 3
+		if ((actualSpeed == 3) && (dieRoll == 1)) {
+			return speedIncDec = -1;
+		} else if (actualSpeed == 3 && (dieRoll == 2 || dieRoll == 3)) {
+			return speedIncDec = 0;
+		} else if (actualSpeed == 3 && (dieRoll == 4 || dieRoll == 5 || dieRoll == 6)) {
+			return speedIncDec = 1;
+		}
+		// Vitesse = 4
+		if ((actualSpeed == 4) && (dieRoll == 1)) {
+			return speedIncDec = -1;
+		} else if (actualSpeed == 4 && (dieRoll == 2 || dieRoll == 3 || dieRoll == 4)) {
+			return speedIncDec = 0;
+		} else if (actualSpeed == 4 && (dieRoll == 5 || dieRoll == 6)) {
+			return speedIncDec = 1;
+		}
+		// Vitesse = 5
+		if ((actualSpeed == 5) && (dieRoll == 1)) {
+			return speedIncDec = -2;
+		} else if (actualSpeed == 5 && (dieRoll == 2 )) {
+			return speedIncDec = -1;
+		} else if (actualSpeed == 5 && (dieRoll == 3 || dieRoll == 4 || dieRoll == 5)) {
+			return speedIncDec = 0;
+		} else if (actualSpeed == 5 && (dieRoll == 6 )) {
+			return speedIncDec = 1;
+		}
+		// Vitesse = 6
+				if ((actualSpeed == 6) && (dieRoll == 1)) {
+					return speedIncDec = -2;
+				} else if (actualSpeed == 6 && (dieRoll == 2 )) {
+					return speedIncDec = -1;
+				} else if (actualSpeed == 6 && (dieRoll == 3 || dieRoll == 4 || dieRoll == 5)) {
+					return speedIncDec = 0;
+				} else if (actualSpeed == 6 && (dieRoll == 6 )) {
+					return speedIncDec = -10;
+				}
 		return speedIncDec;
+	
 	}
 
 	public static void main(String[] args) {
 
 		Scanner scan = new Scanner(System.in);
+
 		boolean replay = true;
 		// Liste des chevaux
 		HashMap<Integer, Integer[]> horsesListHashMap = new HashMap<>();
@@ -102,16 +115,19 @@ public class GitExo03 {
 		// Variables
 		int raceDistance = 2400;
 		int gameChoice = 0;
-		int horsesOnStart = 1;
 
 		int horseSpeedValueIndex = 0;
 		int horseDistanceValueIndex = 1;
 		int horseTimeValueIndex = 2;
 
+		ArrayList<Integer> tierceWinnerArrayList = new ArrayList<>();
+		ArrayList<Integer> quarteWinnerArrayList = new ArrayList<>();
+		ArrayList<Integer> quinteWinnerArrayList = new ArrayList<>();
+
 		// Mise en place des règles du jeu
 		// Choix du nombre de chevaux au départ
 		System.out.println("Entrer le nombre de chevaux au départ: (12 - 20)");
-		horsesOnStart = Integer.parseInt(scan.nextLine());
+		int horsesOnStart = Integer.parseInt(scan.nextLine());
 		while (horsesOnStart < 12 || horsesOnStart > 20) {
 
 			System.out.println("Veuillez entrer un nombre entre 12 et 20");
@@ -121,144 +137,45 @@ public class GitExo03 {
 		// Remplissage de la liste des chevaux avec le nombre entré par l'utilisateur
 		// Initialisation des valeurs à 0
 		for (int i = 0; i < horsesOnStart; i++) {
-			horsesListHashMap.put(i, new Integer[] { 0, 0, 0 });
+			horsesListHashMap.put(i, new Integer[] { 0, 0 });
 		}
 		while (replay) {
 			// Jet du dé et mise à jour des infos des chevaux
 			for (int i = 0; i < horsesOnStart; i++) {
-				int randomDieRoll = dieRoll();
-
 				// On récupère le cheval concerné
 				Integer[] values = horsesListHashMap.get(i);
 
-				values[horseSpeedValueIndex] += speedModif(randomDieRoll, values[horseSpeedValueIndex]);
-				values[horseDistanceValueIndex] += speedCalc(values[horseSpeedValueIndex]);
-				values[horseTimeValueIndex] += 10;
-				horsesListHashMap.put(i, values);
-				System.out.println(Arrays.toString(values));
-			}
+				// jet du dé (OK)
+				int randomDieRoll = dieRoll();
+				System.out.println("Valeur du lancé du dé: " + randomDieRoll);
 
-			// Affichage des infos de tous les chevaux
-
-			for (int i = 0; i < horsesListHashMap.size(); i++) {
-
-				Integer[] values = horsesListHashMap.get(i);
-
-				int speedValue = values[horseSpeedValueIndex];
-				int distanceValue = values[horseDistanceValueIndex];
-				int timeValue = values[horseTimeValueIndex];
-
-				System.out.println("Infos cheval n°= " + (i + 1) + " : " + "vitesse: " + speedValue + "; "
-						+ "distance: " + distanceValue + "; " + "temps:" + timeValue);
-			}
-
-			System.out.println("calcul de la vitesse:" + speedCalc(2));
-			
-			int raceEndLimit = 2400;
-			
-			for (Map.Entry<Integer, Integer[]> entry : horsesListHashMap.entrySet()) {
-				Integer[] values = entry.getValue();
+				// Calcul du delta à appliquer
 				
-				for (int i = 0; i < values.length; i++) {
-					if (values[i] >= raceEndLimit) {
-						int winner = entry.getKey() + 1;
-						replay = false;
-						System.out.println("And the winner is : " + winner);
-						break;
-					}
+				System.out.println("Valeur du delta vitesse:" + updateSpeedCalc(randomDieRoll,values[1]));
+
+		
+
+
+				// Update de la distance actuelle
+//				int updatedDistance = values[1] + distanceDelta;
+//				System.out.println("horse values = " + Arrays.toString(values));
+//				// Mise a jour des valeurs
+//				values[0] += updatedDelta;
+//				values[1] += updatedDistance;
+//				// Mise a jour du tableau
+//				horsesListHashMap.put(i, values);
+//				System.out.println("horse values = " + Arrays.toString(values));
+				System.out.println("Relancer le dé ? Y/N");
+				String playerDieRoll = scan.nextLine().toLowerCase();
+
+				if (playerDieRoll.equals("y")) {
+					replay = true;
+				} else {
+					replay = false;
 				}
 			}
 
 		}
 	}
-//	public static void main(String[] args) {
-//	// Variables
-//	int raceDistance = 2400;
-//	int gameChoice = 0;
-//	int totalHorsesNumber = 12;
-//
-//		int horseKey = 1;
-//
-//		int horseSpeed = 0;
-//		int horseDistance = 1;
-//		int horseTime = 2;
-//
-//		// Liste des chevaux
-//		HashMap<Integer, Integer[]> horsesListHashMap = new HashMap<>();
-//
-//		Scanner scan = new Scanner(System.in);
-//
-//		// Jet de dé
-//		int min = 1;
-//		int max = 6;
-//		int randomNumber = (int) (Math.random() * (max - min + 1)) + min;
-//
-//		// Remplissage de la map
-//		for (int i = 0; i < totalHorsesNumber; i++) {
-//			horsesListHashMap.put(i, new Integer[] { 0, 0, 0 });
-//		}
-
-	// Affichage de la map
-//		for (Map.Entry<Integer, Integer[]> entry : horsesListHashMap.entrySet()) {
-//			int horseNumber = entry.getKey();
-//			Integer[] values = entry.getValue();
-//
-//			System.out.println("Cheval numéro : " + horseNumber + ", données : ");
-//			for (Integer valueInteger : values) {
-//				System.out.println(+valueInteger + " ");
-//			}
-//			System.out.println();
-//		}
-
-	// Affichage des infos d'un cheval
-//		if (horsesListHashMap.containsKey(horseKey)) {
-//			Integer[] values = horsesListHashMap.get(horseKey);
-//
-//			int speedValue = values[horseSpeed];
-//			int distanceValue = values[horseDistance];
-//			int timeValue = values[horseTime];
-//
-//			System.out.println("Infos cheval n°= " + horseKey + " : " + "vitesse: " + speedValue + "; " + "distance: "
-//					+ distanceValue + "; " + "temps:" + timeValue);
-//		}
-
-	// Affichage des infos de tous les chevaux
-
-//		for (int i = 0; i < horsesListHashMap.size();i++) {
-//			
-//			Integer[] values = horsesListHashMap.get(i);
-//
-//			int speedValue = values[horseSpeed];
-//			int distanceValue = values[horseDistance];
-//			int timeValue = values[horseTime];
-//
-//			System.out.println("Infos cheval n°= " + (i + 1) + " : " + "vitesse: " + speedValue + "; " + "distance: "
-//					+ distanceValue + "; " + "temps:" + timeValue);
-//		}
-
-//		System.out.println("Jet du dé: " + randomNumber);
-
-//		System.out.println("Entrer le nombre de chevaux au départ: (12 - 20)");
-//		int horsesOnStart = Integer.parseInt(scan.nextLine());
-//		while (horsesOnStart < 12 || horsesOnStart > 20) {
-//
-//			System.out.println("Veuillez entrer un nombre entre 12 et 20");
-//			horsesOnStart = Integer.parseInt(scan.nextLine());
-//		}
-//		System.out.println("Voulez vous jouer au tiercé (1), au quarté (2) ou au quinté (3) ?");
-//		gameChoice = Integer.parseInt(scan.nextLine());
-//		switch (gameChoice) {
-//		case 1:
-//			System.out.println("On joue au tiercé");
-//			break;
-//		case 2:
-//			System.out.println("On joue au quarté");
-//			break;
-//		case 3:
-//			System.out.println("On joue au quinté");
-//			break;
-//		}
-
-//	}
 
 }
