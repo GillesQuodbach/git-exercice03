@@ -192,7 +192,12 @@ public class GitExo03 {
 				// Calcul du delta à appliquer
 				int lapDelta = updateSpeedCalc(randomDieRoll, values[0]);
 //				System.out.println("Valeur du delta vitesse:" + lapDelta);
+				if (lapDelta == -10) {
 
+					System.out.println("********Le cheval " + (i + 1) + " a été disqualifié*********");
+					values[0] = -10000;
+					values[1] = -10000;
+				}
 				values[0] += lapDelta;
 				if (values[0] <= 0) {
 					values[0] = 0;
@@ -212,6 +217,8 @@ public class GitExo03 {
 			}
 //			while (true) {
 			System.out.println("Relancer le dé ? Y/N");
+			// Boucle pour automatiser le jet du dé
+			// Commenter ligne 222 et décommenter ligne 218 pour activer le "mode manuel"
 			while (!wantToReplay) {
 				String input = scan.nextLine().toLowerCase();
 
